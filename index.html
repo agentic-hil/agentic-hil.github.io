@@ -1,0 +1,22 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Agentic HIL installer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { font: 16px/1.6 system-ui, sans-serif; max-width: 46rem; margin: 4rem auto; padding: 0 1.5rem; }
+  pre { background: #f4f4f2; padding: 1rem; overflow-x: auto; border-radius: 8px; }
+  code { font-family: ui-monospace, monospace; }
+</style>
+<h1>Agentic HIL</h1>
+<p>Your AI agent can develop firmware on its own, because Agentic HIL closes the
+loop with real hardware. This host serves nothing but the installer, mirrored
+from <a href="https://github.com/agentic-hil/agentic-hil">the repository</a>.</p>
+<h2>Linux and macOS</h2>
+<pre><code>curl -LsSf https://agentic-hil.github.io/i.sh | sh</code></pre>
+<h2>Windows</h2>
+<pre><code>powershell -c "irm https://agentic-hil.github.io/i.ps1|iex"</code></pre>
+<p>The scripts are also here under their full names,
+<a href="/install.sh">install.sh</a> and <a href="/install.ps1">install.ps1</a>,
+and are byte for byte the ones on the repository's default branch. Each release
+publishes their SHA-256 as assets, so a copy can be checked before it is run:
+see <a href="https://github.com/agentic-hil/agentic-hil#install">the README</a>.</p>

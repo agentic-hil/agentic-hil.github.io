@@ -1,0 +1,54 @@
+name: Mirror the installers
+
+# This site serves exactly what agentic-hil/agentic-hil holds on master, and
+# nothing it wrote itself. The copy is taken with a checkout of that public
+# repository rather than fetched over the network, so what ships here is what
+# the source repository's own history can be read against.
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mirror
+  cancel-in-progress: false
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out this site
+        uses: actions/checkout@v4
+
+      - name: Check out the source repository
+        uses: actions/checkout@v4
+        with:
+          repository: agentic-hil/agentic-hil
+          ref: master
+          path: source
+
+      - name: Copy the installers under both names
+        run: |
+          set -eu
+          cp source/install.sh install.sh
+          cp source/install.ps1 install.ps1
+          cp source/install.sh i.sh
+          cp source/install.ps1 i.ps1
+          rm -rf source
+
+      - name: Commit what changed
+        run: |
+          set -eu
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- install.sh install.ps1 i.sh i.ps1; then
+            echo "the installers here already match master"
+            exit 0
+          fi
+          git add install.sh install.ps1 i.sh i.ps1
+          git commit -m "chore: mirror the installers from master"
+          git push
