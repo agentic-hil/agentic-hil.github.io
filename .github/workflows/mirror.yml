@@ -1,4 +1,4 @@
-name: Mirror the installers
+name: Mirror the shipped files
 
 # This site serves exactly what agentic-hil/agentic-hil holds on master, and
 # nothing it wrote itself. The copy is taken with a checkout of that public
@@ -31,11 +31,12 @@ jobs:
           ref: master
           path: source
 
-      - name: Copy the installers
+      - name: Copy the installers and llms.txt
         run: |
           set -eu
           cp source/install.sh install.sh
           cp source/install.ps1 install.ps1
+          cp source/llms.txt llms.txt
           rm -rf source
 
       - name: Commit what changed
@@ -43,10 +44,10 @@ jobs:
           set -eu
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet -- install.sh install.ps1; then
-            echo "the installers here already match master"
+          git add install.sh install.ps1 llms.txt
+          if git diff --cached --quiet; then
+            echo "the files here already match master"
             exit 0
           fi
-          git add install.sh install.ps1
-          git commit -m "chore: mirror the installers from master"
+          git commit -m "chore: mirror the shipped files from master"
           git push

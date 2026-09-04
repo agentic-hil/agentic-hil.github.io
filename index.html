@@ -1,6 +1,6 @@
 <!doctype html>
 <meta charset="utf-8">
-<title>Agentic HIL installer</title>
+<title>Agentic HIL: hardware-in-the-loop for AI coding agents</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
   body { font: 16px/1.6 system-ui, sans-serif; max-width: 46rem; margin: 4rem auto; padding: 0 1.5rem; }
@@ -9,8 +9,17 @@
 </style>
 <h1>Agentic HIL</h1>
 <p>Your AI agent can develop firmware on its own, because Agentic HIL closes the
-loop with real hardware. This host serves nothing but the installer, mirrored
-from <a href="https://github.com/agentic-hil/agentic-hil">the repository</a>.</p>
+loop with real hardware: it flashes, resets and drives UART and CAN on a real
+board through a local MCP server, under a policy file you keep, and a human
+reviews the pull request. This host serves the installer and
+<a href="/llms.txt">llms.txt</a>, mirrored from
+<a href="https://github.com/agentic-hil/agentic-hil">the repository</a>.</p>
+<p>Start with <a href="https://github.com/agentic-hil/stm32-starter">the STM32 starter</a>,
+three steps on a Nucleo-F446RE. The
+<a href="https://github.com/agentic-hil/agentic-hil#readme">README</a> shows a
+recorded run, the <a href="https://github.com/agentic-hil/agentic-hil/tree/master/docs">docs</a>
+cover every install path and the safety model, and the package is
+<a href="https://pypi.org/project/agentic-hil/">agentic-hil on PyPI</a>.</p>
 <h2>Linux and macOS</h2>
 <pre><code>curl -LsSf https://agentic-hil.github.io/install.sh | sh</code></pre>
 <h2>Windows</h2>
