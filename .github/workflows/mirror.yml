@@ -1,25 +1,25 @@
-name: Mirror the shipped files
-
-# This site serves exactly what agentic-hil/agentic-hil holds on master, and
-# nothing it wrote itself. The copy is taken with a checkout of that public
-# repository rather than fetched over the network, so what ships here is what
-# the source repository's own history can be read against.
+name: Mirror and publish the documentation
 
 on:
+  push:
+    branches: [main]
   schedule:
     - cron: "17 * * * *"
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: mirror
+  group: pages-publication
   cancel-in-progress: false
 
 jobs:
-  mirror:
+  build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: read
     steps:
       - name: Check out this site
         uses: actions/checkout@v4
@@ -30,6 +30,15 @@ jobs:
           repository: agentic-hil/agentic-hil
           ref: master
           path: source
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install documentation dependencies
+        run: python -m pip install -r source/docs/requirements.txt
 
       - name: Copy the installers and llms.txt
         run: |
@@ -37,9 +46,20 @@ jobs:
           cp source/install.sh install.sh
           cp source/install.ps1 install.ps1
           cp source/llms.txt llms.txt
-          rm -rf source
 
-      - name: Commit what changed
+      - name: Build and validate the complete site
+        run: python .github/scripts/build-site.py source _site
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload the complete site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      # Deploy in this run: pushes made with GITHUB_TOKEN do not start workflows.
+      - name: Commit mirrored files that changed
         run: |
           set -eu
           git config user.name "github-actions[bot]"
@@ -51,3 +71,17 @@ jobs:
           fi
           git commit -m "chore: mirror the shipped files from master"
           git push
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

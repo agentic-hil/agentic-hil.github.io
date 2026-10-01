@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://agentic-hil.github.io/sitemap.xml
+Sitemap: https://agentic-hil.github.io/docs/sitemap.xml

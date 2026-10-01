@@ -1,30 +1,50 @@
 <!doctype html>
-<meta charset="utf-8">
-<title>Agentic HIL: hardware-in-the-loop for AI coding agents</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-  body { font: 16px/1.6 system-ui, sans-serif; max-width: 46rem; margin: 4rem auto; padding: 0 1.5rem; }
-  pre { background: #f4f4f2; padding: 1rem; overflow-x: auto; border-radius: 8px; }
-  code { font-family: ui-monospace, monospace; }
-</style>
-<h1>Agentic HIL</h1>
-<p>Your AI agent can develop firmware on its own, because Agentic HIL closes the
-loop with real hardware: it flashes, resets and drives UART and CAN on a real
-board through a local MCP server, under a policy file you keep, and a human
-reviews the pull request. This host serves the installer and
-<a href="/llms.txt">llms.txt</a>, mirrored from
-<a href="https://github.com/agentic-hil/agentic-hil">the repository</a>.</p>
-<p>Start with <a href="https://github.com/agentic-hil/stm32-starter">the STM32 starter</a>,
-three steps on a Nucleo-F446RE. The
-<a href="https://github.com/agentic-hil/agentic-hil#readme">README</a> shows a
-recorded run, the <a href="https://github.com/agentic-hil/agentic-hil/tree/master/docs">docs</a>
-cover every install path and the safety model, and the package is
-<a href="https://pypi.org/project/agentic-hil/">agentic-hil on PyPI</a>.</p>
-<h2>Linux and macOS</h2>
-<pre><code>curl -LsSf https://agentic-hil.github.io/install.sh | sh</code></pre>
-<h2>Windows</h2>
-<pre><code>powershell -c "irm https://agentic-hil.github.io/install.ps1|iex"</code></pre>
-<p><a href="/install.sh">install.sh</a> and <a href="/install.ps1">install.ps1</a>
-are byte for byte the ones on the repository's default branch. Each release
-publishes their SHA-256 as assets, so a copy can be checked before it is run:
-see <a href="https://github.com/agentic-hil/agentic-hil#install">the README</a>.</p>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agentic HIL: develop firmware on your real board with your coding agent</title>
+  <meta name="description" content="Let your existing AI coding agent build and flash firmware, check the real board, and fix failures using hardware feedback. Local tools, recorded runs, and a working starter.">
+  <link rel="canonical" href="https://agentic-hil.github.io/">
+  <style>
+    body { font: 16px/1.6 system-ui, sans-serif; max-width: 46rem; margin: 4rem auto; padding: 0 1.5rem; color: #202124; }
+    h1 { line-height: 1.2; }
+    a { color: #0645ad; }
+    pre { background: #f4f4f2; padding: 1rem; overflow-x: auto; border-radius: 8px; }
+    code { font-family: ui-monospace, monospace; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Let your coding agent develop firmware on your real board</h1>
+  <p>Agentic Hardware-in-the-Loop (Agentic HIL) connects the coding agent you already use to the board on your desk. The agent builds your firmware, flashes it, checks what the board actually does, and uses that feedback to fix failures. You review the code and the recorded hardware result.</p>
+
+  <h2>Use your existing firmware project</h2>
+  <p>Install once, restart your agent, and open the project you want to work on. Agentic HIL supplies the local hardware tools; your agent uses your project's build system and toolchain.</p>
+  <p><a href="/docs/">The development guide</a> covers setup, the development loop, supported probes, and recorded evidence.</p>
+
+  <h2>Install</h2>
+  <p>Linux and macOS, in any shell:</p>
+  <pre><code>curl -LsSf https://agentic-hil.github.io/install.sh | sh</code></pre>
+  <p>Windows, in PowerShell:</p>
+  <pre><code>irm https://agentic-hil.github.io/install.ps1 | iex</code></pre>
+  <p>The installer registers the skill and local MCP server for the Claude Code, Codex, and opencode CLIs it finds. Restart your agent once after installation. <a href="/docs/installation/">Installation</a> covers prerequisites, other install paths, and checking the installer before running it.</p>
+
+  <h2>See the hardware loop</h2>
+  <p>The <a href="https://github.com/agentic-hil/agentic-hil#readme">recorded demo</a> shows firmware being written, flashed, and checked on a real board. The <a href="https://github.com/agentic-hil/stm32-starter">STM32 starter</a> includes firmware, hardware test plans, and a deliberate defect to find and fix on a Nucleo-F446RE.</p>
+  <ul>
+    <li><a href="/docs/use-cases/flash-and-reset/">Flash and restart a board</a>, with two recorded runs and their limits.</li>
+    <li><a href="/docs/use-cases/uart-and-can/">Send commands and check answers over UART or CAN</a>, with a failing expectation and its fix.</li>
+    <li><a href="/docs/use-cases/check-plan/">Check a test plan without a board</a>, and understand what requires a real hardware run.</li>
+  </ul>
+
+  <h2>What you can connect</h2>
+  <p>Hardware support follows the debug probe and its backend: ST-Link through OpenOCD or STM32CubeProgrammer, and CMSIS-DAP through pyOCD. Your target toolchain and backend must support the board you connect. The Nucleo is the reference example. <a href="/docs/support/">Support</a> and <a href="/docs/installation/#platforms-and-debugger-backends">backend prerequisites</a> describe the current scope.</p>
+  <p>A configuration outside the firmware repository defines the devices and actions the agent may use. Hardware actions return structured results and logs that the agent and reviewer can inspect. <a href="/docs/safety-model/">The safety model</a> explains that boundary.</p>
+</main>
+<footer>
+  <p><a href="/docs/">Documentation</a> | <a href="https://github.com/agentic-hil/agentic-hil">Source repository</a> | <a href="https://pypi.org/project/agentic-hil/">Python package</a> | <a href="/llms.txt">Agent-readable links</a></p>
+  <p><a href="/install.sh">install.sh</a> and <a href="/install.ps1">install.ps1</a> are mirrored from the source repository. Each release publishes their SHA-256 as assets.</p>
+</footer>
+</body>
+</html>
